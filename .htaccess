@@ -3,3 +3,7 @@ AddDefaultCharset UTF-8
 
 ErrorDocument 404 /error.php
 ErrorDocument 400 /error.php
+
+# RewriteRule ^main?$ index.php [NC, L]
+# RewriteRule ^reg?$ reg.php [NC, L]
+# RewriteRule ^error?$ error.php [NC, L]
