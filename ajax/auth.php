@@ -15,15 +15,16 @@ $hash = "ieatpeanutbutter";
 $pass = md5($password . $hash);
 
 require_once "../mysql_connect.php";
-$sql = 'SELECT `id` FROM `users` WHERE `email` = :email && `password` = :password';
+$sql = 'SELECT `id`,`name` FROM `users` WHERE `email` = :email && `password` = :password';
 $query = $pdo->prepare($sql);
 $query->execute(['email' =>  $email, 'password' => $pass]);
 
 $user = $query->fetch(PDO::FETCH_OBJ);
+$name = $user->name;
 if($user->id == 0)
   echo "Such user does not exist";
 else {
-  setcookie('log', $email, time() + 3600 * 24 * 30, "/");
+  setcookie('log', $name, time() + 3600 * 24 * 30, "/");
   echo 'Done';
 }
 

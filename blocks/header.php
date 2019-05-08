@@ -16,6 +16,7 @@
         <?php
         else:
         ?>
+        <a class="btn btn-sm btn-outline-secondary mr-2" href="/article.php">New Article</a>
         <a class="btn btn-sm btn-outline-primary mr-2" href="/auth.php">My profile</a>
         <?php
         endif;
