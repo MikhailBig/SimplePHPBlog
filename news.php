@@ -2,30 +2,38 @@
 <html lang="en" dir="ltr">
   <head>
     <?php
-    $website_title = "PHP blog";
-    include_once "blocks/head.php"?>
+    require_once 'mysql_connect.php';
+    $sql = 'SELECT * FROM `articles` WHERE `id` = :id';
+    $id = $_GET['id'];
+    $query = $pdo->prepare($sql);
+    $query->execute(['id' => $id]);
+    $article = $query->fetch(PDO::FETCH_OBJ);
+
+    $website_title = $article->title;
+    include_once "blocks/head.php";
+    ?>
   </head>
   <body>
     <?php include_once "blocks/header.php"?>
 
     <main role="main" class="container">
-
-
       <div class="row">
         <div class="col-md-8 blog-main">
-          <?php
-          require_once 'mysql_connect.php';
-          $sql = 'SELECT * FROM `articles` ORDER BY `date` DESC';
-          $query = $pdo->query($sql);
-          while($row = $query->fetch(PDO::FETCH_OBJ)){
-            echo "<div class='blog-post'>
-              <h2 class='blog-post-title'>$row->title</h2>
-              <p class='blog-post-meta'>$row->author
-              <p>$row->intro
-              <p><a class='btn btn-default' href='/news.php?id=$row->id' title='$row->title'>Read more...</a>
-              </div>";
-          }
-          ?>
+          <div class="jumbotron">
+            <h1><?=$article->title?></h1>
+            <p><?=$article->intro?>
+            <br><br>
+            <?=$article->text?>
+            </p>
+            <p class='blog-post-meta'><?=$article->author?>
+              <?php
+              $date = date('d ', $article->date);
+              $array = ["Jan", "Fab", "Mar", "Apr", "May", "June", "Jule", "Aug", "Sep", "Oct", "Nov", "Dec"];
+              $date .= $array[date('n', $article->date)-1];
+              $date .= date(' H:i', $article->date);
+              ?>
+            <p class='blog-post-meta'><?=$date?>
+          </div>
           <!-- /.blog-post -->
 
           <nav class="blog-pagination">

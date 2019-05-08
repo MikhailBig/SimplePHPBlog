@@ -58,6 +58,9 @@
             if(data == 'Done'){
               $('#reg_user').text('All Done');
               $('#errorBlock').hide();
+              alert('Registration complete!')
+              var url = "/";
+              $(location).attr('href',url);
             } else {
               $('#errorBlock').show();
               $('#errorBlock').text(data);
