@@ -33,13 +33,43 @@
               $date .= date(' H:i', $article->date);
               ?>
             <p class='blog-post-meta'><?=$date?>
+
           </div>
           <!-- /.blog-post -->
+          <form class="/news.php?id=<?=$_GET['id']?>" method="post">
+            <div class="form-group">
+              <label for="username">Name</label>
+              <input type="text" class="form-control" id="username" name="username" placeholder="" value="<?=$_COOKIE['log']?>">
+            </div>
+            <div class="form-group">
+              <label for="msg">Message</label>
+              <textarea type="text" class="form-control" id="msg" name="msg"></textarea>
+            </div>
+            <div class="alert alert-danger" id="errorBlock"></div>
+            <button type="submit" class="btn btn-success mb-5" id="msg_send">POST</button>
+          </form>
+          <h3>Recent comments:</h3>
+            <?php
+              if($_POST['username'] != '' && $_POST['msg'] != '') {
+                $username = trim(filter_var($_POST['username'], FILTER_SANITIZE_STRING));
+                $msg = trim(filter_var($_POST['msg'], FILTER_SANITIZE_STRING));
+                $sql = 'INSERT INTO comments(name, msg, art_id) VALUES (?, ?, ?)';
+                $query = $pdo->prepare($sql);
+                $query->execute([$username, $msg, $_GET['id']]);
+              }
 
-          <nav class="blog-pagination">
-            <a class="btn btn-outline-primary" href="#">Older</a>
-            <a class="btn btn-outline-secondary disabled" href="#" tabindex="-1" aria-disabled="true">Newer</a>
-          </nav>
+              $sql = 'SELECT * FROM `comments` WHERE `art_id` = :id ORDER BY `id` DESC';
+              $query = $pdo->prepare($sql);
+              $query->execute(['id' => $_GET['id']]);
+              $comments = $query->fetchAll(PDO::FETCH_OBJ);
+
+              foreach ($comments as $comment) {
+                echo "<div class='alert alert-info mb-2 mt-1'>
+                  <h4>$comment->name</h4>
+                  <p>$comment->msg</p>
+                </div>";
+              }
+            ?>
        </div><!-- /.blog-main -->
        <?php include_once "blocks/aside.php"?>
 
